@@ -1,15 +1,21 @@
 (ns katas.projecteuler
   (:require [clojure.test :refer :all]))
 
+(defn fibonacci-numbers [n] (loop [until n
+                                   left-term 1
+                                   right-term 2
+                                   seq (conj [] 1)]
+                               (if (> right-term until)
+                                 seq
+                                 (recur until right-term (+ left-term right-term) (conj seq right-term)))
+                               ))
 
-(defn multiple-of-3? [x] (= 0 (rem x 3)))
-(defn multiple-of-5? [x] (= 0 (rem x 5)))
-(defn multiple-of-3-or-5? [x] (or (multiple-of-3? x) (multiple-of-5? x)))
-(defn seq-of-multiples-of-3-or-5-below [n] (filter multiple-of-3-or-5? (range 1 n)))
-(defn sum-of-muliples-of-3-and-5-below [n] (reduce + (seq-of-multiples-of-3-or-5-below n)))
+(defn sum-of-even-fibonacci-numbers-until [n] (->> (fibonacci-numbers n)
+                                                   (filter even?)
+                                                   (reduce +)))
 
-(testing "sum of multiples of 3 and 5 https://projecteuler.net/problem=1"
-  (is (= 23 (sum-of-muliples-of-3-and-5-below 10))))
+(testing "even fibonacci numbers https://projecteuler.net/problem=2"
+  (is (= [1 2 3 5 8] (fibonacci-numbers 10)))
+  (is (= 10 (sum-of-even-fibonacci-numbers-until 10))))
 
-(sum-of-muliples-of-3-and-5-below 1000)
-
+(sum-of-even-fibonacci-numbers-until 4000000)
